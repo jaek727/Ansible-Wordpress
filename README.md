@@ -1,4 +1,8 @@
 README
+======
+
+This project allows you to manage a multi-site Wordpress server.  You can use it to easily create/delete Wordpress sites using Ansible.
+
 
 Please these files on the Webserver
 * /etc/apache2apache2.conf
