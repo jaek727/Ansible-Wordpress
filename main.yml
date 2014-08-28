@@ -1,0 +1,25 @@
+- name: Create/Delete WP site
+  #action: command /usr/bin/touch /home/ubuntu/foobarjae
+  #action: command /bin/rm /home/ubuntu/foobar
+  #action: command /home/ubuntu/wp_create Site1 admin1 password
+  #action: command /home/ubuntu/wp_create Site4 admin4 password
+  #action: command /home/ubuntu/wp_create Site5 admin5 password
+  #action: command /home/ubuntu/wp_create Site6 admin6 password
+
+#- name: Delete WP site
+#  action: command /home/ubuntu/wp_delete Site1 admin1
+
+#- name: Create WP1 site
+  action: command /home/ubuntu/wp_create Site1 admin1 password
+
+#- name: Create WP2 site
+#  action: command /home/ubuntu/wp_create Site2 admin2 password
+
+#- name: Create WP3 site
+#  action: command /home/ubuntu/wp_create Site3 admin3 password
+
+#- name: Create WP4 site
+#  action: command /home/ubuntu/wp_create Site4 admin4 password
+
+#- name: Create WP5 site
+#  action: command /home/ubuntu/wp_create Site5 admin5 password

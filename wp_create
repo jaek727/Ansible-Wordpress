@@ -1,0 +1,45 @@
+#!/bin/bash
+
+EXPECTED_ARGS=3
+if [ $# -ne $EXPECTED_ARGS ]
+then
+   echo "Usage: $0 site_name dbuser dbpass"
+   exit 1
+fi
+
+SITENAME=$1
+USERNAME=$2
+PASSWORD=$3
+DATABASE=$SITENAME"_DB"
+
+
+echo "SITENAME = " $SITENAME
+echo "USERNAME = " $USERNAME
+echo "PASSWORD = " $PASSWORD
+echo "DATABASE = " $DATABASE
+
+echo "Creating /etc/apache2/sites-available/000-$SITENAME.conf"
+sudo cp /etc/apache2/sites-available/000-default.conf.orig /etc/apache2/sites-available/000-$SITENAME.conf
+
+echo "Setting DocumentRoot..."
+sudo sed -i s/"DocumentRoot \/var\/www\/html"/"DocumentRoot\ \/var\/www\/html\/wordpress\/$SITENAME"/  /etc/apache2/sites-available/000-$SITENAME.conf
+
+echo "Creating folder /var/www/html/wordpress/$SITENAME"
+sudo mkdir /var/www/html/wordpress/$SITENAME
+sudo chown ubuntu:ubuntu /var/www/html/wordpress/$SITENAME
+sudo rsync -avP /var/www/html/wp/* /var/www/html/wordpress/$SITENAME
+
+cp /home/ubuntu/create.sql.orig /home/ubuntu/create-$SITENAME.sql
+sed -i s/"DB_NAME"/"$DATABASE"/    /home/ubuntu/create-$SITENAME.sql
+sed -i s/"DB_USER"/"$USERNAME"/   /home/ubuntu/create-$SITENAME.sql
+sed -i s/"DB_PASSWORD"/"$PASSWORD"/  /home/ubuntu/create-$SITENAME.sql
+mysql -u root --password=[redacted password] <  /home/ubuntu/create-$SITENAME.sql
+
+sudo cp /var/www/html/wordpress/$SITENAME/wp-config-sample.php /var/www/html/wordpress/$SITENAME/wp-config.php 
+sudo chown ubuntu:ubuntu /var/www/html/wordpress/$SITENAME/wp-config.php
+sed -i s/"database_name_here"/"$DATABASE"/   /var/www/html/wordpress/$SITENAME/wp-config.php
+sed -i s/"username_here"/"$USERNAME"/   /var/www/html/wordpress/$SITENAME/wp-config.php
+sed -i s/"password_here"/"$PASSWORD"/   /var/www/html/wordpress/$SITENAME/wp-config.php
+
+sudo a2ensite 000-$SITENAME
+sudo service apache2 reload

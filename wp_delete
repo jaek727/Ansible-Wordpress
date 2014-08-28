@@ -1,0 +1,34 @@
+#!/bin/bash
+
+EXPECTED_ARGS=2
+if [ $# -ne $EXPECTED_ARGS ]
+then
+   echo "Usage: $0 sitename dbuser"
+   exit 1
+fi
+
+SITENAME=$1
+USERNAME=$2
+DATABASE=$SITENAME"_DB"
+
+
+echo "SITENAME = " $SITENAME
+echo "USERNAME = " $USERNAME
+echo "DATABASE = " $DATABASE
+
+echo "rm -f /etc/apache2/sites-available/000-$SITENAME.conf"
+sudo rm -f /etc/apache2/sites-available/000-$SITENAME.conf
+
+echo "rm -f /etc/apache2/sites-enabled/000-$SITENAME.conf"
+sudo rm -f /etc/apache2/sites-enabled/000-$SITENAME.conf
+
+echo "rm -fr /var/www/html/wordpress/$SITENAME"
+sudo rm -fr /var/www/html/wordpress/$SITENAME
+
+echo "sudo rm -f /home/ubuntu/create-$SITENAME.sql"
+sudo rm -f /home/ubuntu/create-$SITENAME.sql
+
+echo "drop user $USERNAME" | mysql -u root --password=[redacted password]
+echo "drop database $DATABASE" | mysql -u root --password=[redacted password]
+
+sudo service apache2 reload 
